@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Maintenance Management System</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body>
+        <!-- Toast Notifications -->
+        <div class="toast-container">
+            <div class="toast align-items-center text-white bg-success"
+                role="alert" aria-live="assertive" aria-atomic="true"
+                id="successToast">
+                <div class="d-flex">
+                    <div class="toast-body"></div>
+                    <button type="button"
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="toast align-items-center text-white bg-danger"
+                role="alert" aria-live="assertive" aria-atomic="true"
+                id="errorToast">
+                <div class="d-flex">
+                    <div class="toast-body"></div>
+                    <button type="button"
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-2 sidebar p-0">
+                    <div class="d-flex flex-column flex-shrink-0 p-3">
+                        <a href="/"
+                            class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                            <span class="fs-4 fw-bold"><i
+                                    class="bi bi-tools me-2"></i>Maintenance
+                                Pro</span>
+                        </a>
+                        <hr class="text-white-50">
+                        <ul class="nav nav-pills flex-column mb-auto"
+                            id="sidebarMenu">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link active"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#dashboard">
+                                    <i class="bi bi-speedometer2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#devices">
+                                    <i class="bi bi-pc-display"></i> Devices
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#maintenance">
+                                    <i class="bi bi-tools"></i> Maintenance
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#alerts">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Alerts
+                                    <span
+                                        class="badge bg-danger rounded-pill notification-badge"
+                                        id="alertBadge">0</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#technicians">
+                                    <i class="bi bi-people"></i> Technicians
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#reports">
+                                    <i class="bi bi-file-earmark-bar-graph"></i>
+                                    Reports
+                                </a>
+                            </li>
+                            <li class="nav-item" id="adminMenu"
+                                style="display: none;">
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#users">
+                                    <i class="bi bi-person-lock"></i> User
+                                    Management
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#activitylog">
+                                    <i class="bi bi-clock-history"></i> Activity Log
+                                </a>
+                            </li>
+                        </ul>
+                        <hr class="text-white-50">
+                        <div class="dropdown">
+                            <a href="#"
+                                class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                                id="dropdownUser" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img
+                                    src="https://ui-avatars.com/api/?name=User&background=4361ee&color=fff"
+                                    alt class="avatar">
+                                <div>
+                                    <strong id="usernameDisplay">User</strong>
+                                    <small id="userRoleDisplay"
+                                        class="d-block text-white-50">Role</small>
+                                </div>
+                            </a>
+                            <ul
+                                class="dropdown-menu dropdown-menu-dark text-small shadow"
+                                aria-labelledby="dropdownUser">
+                                <li><a class="dropdown-item" href="#"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#profile"><i
+                                            class="bi bi-person me-2"></i>Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#"
+                                        id="logoutBtn"><i
+                                            class="bi bi-box-arrow-right me-2"></i>Sign
+                                        out</a></li>
+                            </ul>
+                        </div>
+                        <!-- Nút Add User chỉ hiện với admin -->
+                        <div class="admin-only" style="display:none; margin-top: 10px;">
+                            <button class="btn btn-success w-100" onclick="$('#addUserModal').modal('show')">
+                                <i class="bi bi-person-plus"></i> Add User
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main content -->
+                <div class="col-md-10 main-content">
+                    <div class="tab-content">
+                        <!-- Dashboard Tab -->
+                        <!-- Dashboard Tab -->
+                        <div class="tab-pane fade show active" id="dashboard">
+                            <h2 class="page-title"><i
+                                    class="bi bi-speedometer2"></i> Dashboard
+                                Overview</h2>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div
+                                        class="card text-white bg-primary mb-3">
+                                        <div class="card-body">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5 class="card-title">Total
+                                                        Devices</h5>
+                                                    <p class="card-text fs-4"
+                                                        id="totalDevices">0</p>
+                                                </div>
+                                                <i class="bi bi-pc-display"
+                                                    style="font-size: 2rem; opacity: 0.5;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div
+                                        class="card text-white bg-success mb-3">
+                                        <div class="card-body">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5
+                                                        class="card-title">Active
+                                                        Devices</h5>
+                                                    <p class="card-text fs-4"
+                                                        id="activeDevices">0</p>
+                                                </div>
+                                                <i class="bi bi-check-circle"
+                                                    style="font-size: 2rem; opacity: 0.5;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div
+                                        class="card text-white bg-warning mb-3">
+                                        <div class="card-body">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5
+                                                        class="card-title">Maintenance</h5>
+                                                    <p class="card-text fs-4"
+                                                        id="maintenanceDevices">0</p>
+                                                </div>
+                                                <i class="bi bi-tools"
+                                                    style="font-size: 2rem; opacity: 0.5;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-white bg-danger mb-3">
+                                        <div class="card-body">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5
+                                                        class="card-title">Broken</h5>
+                                                    <p class="card-text fs-4"
+                                                        id="brokenDevices">0</p>
+                                                </div>
+                                                <i
+                                                    class="bi bi-exclamation-triangle"
+                                                    style="font-size: 2rem; opacity: 0.5;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div
+                                            class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">Recent Alerts</h5>
+                                            <a href="#" data-bs-toggle="tab"
+                                                data-bs-target="#alerts"
+                                                class="btn btn-sm btn-outline-primary">View
+                                                All</a>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table
+                                                    class="table table-hover mb-0"
+                                                    id="recentAlertsTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Device</th>
+                                                            <th>Alert</th>
+                                                            <th>Date</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div
+                                            class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">Upcoming
+                                                Maintenance</h5>
+                                            <a href="#" data-bs-toggle="tab"
+                                                data-bs-target="#maintenance"
+                                                class="btn btn-sm btn-outline-primary">View
+                                                All</a>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table
+                                                    class="table table-hover mb-0"
+                                                    id="upcomingMaintenanceTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Device</th>
+                                                            <th>Scheduled</th>
+                                                            <th>Technician</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Devices Tab -->
+                        <div class="tab-pane fade" id="devices">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="page-title"><i
+                                        class="bi bi-pc-display"></i> Device
+                                    Management</h2>
+                                <div>
+                                    <button class="btn btn-primary me-2"
+                                        id="addDeviceBtn">
+                                        <i class="bi bi-plus-circle me-1"></i>
+                                        Add Device
+                                    </button>
+                                    <button class="btn btn-success"
+                                        id="exportDevicesBtn">
+                                        <i class="bi bi-download me-1"></i>
+                                        Export
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="search-box">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="form-control"
+                                    id="deviceSearch"
+                                    placeholder="Search devices...">
+                            </div>
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0"
+                                            id="devicesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Serial</th>
+                                                    <th>Model</th>
+                                                    <th>Status</th>
+                                                    <th>Location</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Maintenance Tab -->
+                        <div class="tab-pane fade" id="maintenance">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="page-title"><i
+                                        class="bi bi-tools"></i> Maintenance
+                                    Schedules</h2>
+                                    <button class="btn btn-primary"
+                                        id="addScheduleBtn">
+                                        <i class="bi bi-plus-circle me-1"></i> Add
+                                        Schedule
+                                    </button>
+                            </div>
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0"
+                                            id="maintenanceTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Device</th>
+                                                    <th>Type</th>
+                                                    <th>Scheduled</th>
+                                                    <th>Status</th>
+                                                    <th>Technician</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerts Tab -->
+                        <div class="tab-pane fade" id="alerts">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="page-title"><i
+                                        class="bi bi-exclamation-triangle"></i>
+                                    Alerts</h2>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                        type="checkbox" id="showResolvedAlerts">
+                                    <label class="form-check-label"
+                                        for="showResolvedAlerts">Show
+                                        Resolved</label>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0"
+                                            id="alertsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Device</th>
+                                                    <th>Alert</th>
+                                                    <th>Date</th>
+                                                    <th>Severity</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technicians Tab -->
+                        <div class="tab-pane fade" id="technicians">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="page-title"><i
+                                        class="bi bi-people"></i>
+                                    Technicians</h2>
+                                    <button class="btn btn-primary"
+                                        id="addTechnicianBtn">
+                                        <i class="bi bi-plus-circle me-1"></i> Add
+                                        Technician
+                                    </button>
+                            </div>
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0"
+                                            id="techniciansTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Specialization</th>
+                                                    <th>Phone</th>
+                                                    <th>Hire Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reports Tab -->
+                        <div class="tab-pane fade" id="reports">
+                            <h2 class="page-title"><i
+                                    class="bi bi-file-earmark-bar-graph"></i>
+                                Reports</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <i class="bi bi-pc-display"
+                                                    style="font-size: 2.5rem; color: var(--primary-color);"></i>
+                                            </div>
+                                            <h5
+                                                class="card-title text-center">Device
+                                                Status Report</h5>
+                                            <p
+                                                class="card-text text-center text-muted">Generate
+                                                a report showing the status of
+                                                all devices.</p>
+                                            <button
+                                                class="btn btn-primary w-100"
+                                                id="deviceStatusReportBtn">
+                                                <i
+                                                    class="bi bi-download me-1"></i>
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <i class="bi bi-tools"
+                                                    style="font-size: 2.5rem; color: var(--primary-color);"></i>
+                                            </div>
+                                            <h5
+                                                class="card-title text-center">Maintenance
+                                                Report</h5>
+                                            <p
+                                                class="card-text text-center text-muted">Generate
+                                                a report of all maintenance
+                                                activities.</p>
+                                            <button
+                                                class="btn btn-primary w-100"
+                                                id="maintenanceReportBtn">
+                                                <i
+                                                    class="bi bi-download me-1"></i>
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <i
+                                                    class="bi bi-exclamation-triangle"
+                                                    style="font-size: 2.5rem; color: var(--primary-color);"></i>
+                                            </div>
+                                            <h5
+                                                class="card-title text-center">Alert
+                                                Report</h5>
+                                            <p
+                                                class="card-text text-center text-muted">Generate
+                                                a report of all alerts and their
+                                                resolution.</p>
+                                            <button
+                                                class="btn btn-primary w-100"
+                                                id="alertReportBtn">
+                                                <i
+                                                    class="bi bi-download me-1"></i>
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Management Tab (Admin only) -->
+                        <div class="tab-pane fade" id="users">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="page-title"><i
+                                        class="bi bi-person-lock"></i> User
+                                    Management</h2>
+                                    <button class="btn btn-primary"
+                                        id="addUserBtn">
+                                        <i class="bi bi-plus-circle me-1"></i> Add
+                                        User
+                                    </button>
+                            </div>
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0"
+                                            id="usersTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Username</th>
+                                                    <th>Full Name</th>
+                                                    <th>Email</th>
+                                                    <th>Role</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Tab -->
+                        <div class="tab-pane fade" id="profile">
+                            <h2 class="page-title"><i class="bi bi-person"></i>
+                                User Profile</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="text-center mb-4">
+                                                <img
+                                                    src="https://ui-avatars.com/api/?name=User&background=4361ee&color=fff"
+                                                    alt class="avatar"
+                                                    style="width: 100px; height: 100px;">
+                                                <h4 class="mt-3"
+                                                    id="profileFullNameDisplay">User
+                                                    Name</h4>
+                                                <p class="text-muted"
+                                                    id="profileRoleDisplay">Role</p>
+                                            </div>
+                                            <form id="profileForm">
+                                                <div class="mb-3">
+                                                    <label for="profileUsername"
+                                                        class="form-label">Username</label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="profileUsername"
+                                                        readonly>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="profileFullName"
+                                                        class="form-label">Full
+                                                        Name</label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="profileFullName">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="profileEmail"
+                                                        class="form-label">Email</label>
+                                                    <input type="email"
+                                                        class="form-control"
+                                                        id="profileEmail">
+                                                </div>
+                                                <hr>
+                                                <h5 class="mb-3">Change
+                                                    Password</h5>
+                                                <div class="mb-3">
+                                                    <label
+                                                        for="profileCurrentPassword"
+                                                        class="form-label">Current
+                                                        Password</label>
+                                                    <input type="password"
+                                                        class="form-control"
+                                                        id="profileCurrentPassword">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label
+                                                        for="profileNewPassword"
+                                                        class="form-label">New
+                                                        Password</label>
+                                                    <input type="password"
+                                                        class="form-control"
+                                                        id="profileNewPassword">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label
+                                                        for="profileConfirmPassword"
+                                                        class="form-label">Confirm
+                                                        Password</label>
+                                                    <input type="password"
+                                                        class="form-control"
+                                                        id="profileConfirmPassword">
+                                                </div>
+                                                <button type="submit"
+                                                    class="btn btn-primary w-100">
+                                                    <i
+                                                        class="bi bi-save me-1"></i>
+                                                    Update Profile
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activity Log Tab -->
+                        <div class="tab-pane fade" id="activitylog">
+                            <h2 class="page-title"><i class="bi bi-clock-history"></i> Activity Log</h2>
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0" id="activityLogTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>User</th>
+                                                    <th>Action</th>
+                                                    <th>Details</th>
+                                                    <th>Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modals -->
+            <!-- Add Device Modal -->
+            <div class="modal fade" id="addDeviceModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add New Device</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="deviceForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="deviceName"
+                                                class="form-label">Device Name
+                                                <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="deviceName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="serialNumber"
+                                                class="form-label">Serial Number
+                                                <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="serialNumber" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="deviceModel"
+                                                class="form-label">Model</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="deviceModel">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="manufacturer"
+                                                class="form-label">Manufacturer</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="manufacturer">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="purchaseDate"
+                                                class="form-label">Purchase
+                                                Date</label>
+                                            <input type="date"
+                                                class="form-control"
+                                                id="purchaseDate">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="warrantyExpiry"
+                                                class="form-label">Warranty
+                                                Expiry</label>
+                                            <input type="date"
+                                                class="form-control"
+                                                id="warrantyExpiry">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="deviceStatus"
+                                                class="form-label">Status <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select"
+                                                id="deviceStatus" required>
+                                                <option
+                                                    value="active">Active</option>
+                                                <option
+                                                    value="maintenance">Maintenance</option>
+                                                <option
+                                                    value="broken">Broken</option>
+                                                <option
+                                                    value="decommissioned">Decommissioned</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="deviceLocation"
+                                                class="form-label">Location</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="deviceLocation">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="deviceNotes"
+                                        class="form-label">Notes</label>
+                                    <textarea class="form-control"
+                                        id="deviceNotes" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary"
+                                id="saveDeviceBtn">Save Device</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device Detail Modal -->
+            <div class="modal fade" id="deviceDetailModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Device Details</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Device
+                                            Name</div>
+                                        <div class="detail-value"
+                                            id="detailDeviceName"></div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Serial
+                                            Number</div>
+                                        <div class="detail-value"
+                                            id="detailSerialNumber"></div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Model</div>
+                                        <div class="detail-value"
+                                            id="detailModel"></div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div
+                                            class="detail-label">Manufacturer</div>
+                                        <div class="detail-value"
+                                            id="detailManufacturer"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Status</div>
+                                        <div class="detail-value">
+                                            <span class="status-badge"
+                                                id="detailStatusBadge"></span>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Purchase
+                                            Date</div>
+                                        <div class="detail-value"
+                                            id="detailPurchaseDate"></div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Warranty
+                                            Expiry</div>
+                                        <div class="detail-value"
+                                            id="detailWarrantyExpiry"></div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Location</div>
+                                        <div class="detail-value"
+                                            id="detailLocation"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Notes</div>
+                                <div class="detail-value"
+                                    id="detailNotes"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Maintenance
+                                    History</div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm"
+                                        id="deviceMaintenanceTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Type</th>
+                                                <th>Technician</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Maintenance Schedule Modal -->
+            <div class="modal fade" id="addScheduleModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Maintenance
+                                Schedule</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="scheduleForm">
+                                <div class="mb-3">
+                                    <label for="scheduleDevice"
+                                        class="form-label">Device <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select"
+                                        id="scheduleDevice" required>
+                                        <option value>Select Device</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="scheduleTechnician"
+                                        class="form-label">Technician <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select"
+                                        id="scheduleTechnician" required>
+                                        <option value>Select Technician</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="maintenanceType"
+                                        class="form-label">Maintenance Type
+                                        <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select"
+                                        id="maintenanceType" required>
+                                        <option
+                                            value="preventive">Preventive</option>
+                                        <option
+                                            value="corrective">Corrective</option>
+                                        <option
+                                            value="predictive">Predictive</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="scheduledDate"
+                                        class="form-label">Scheduled Date <span
+                                            class="text-danger">*</span></label>
+                                    <input type="datetime-local"
+                                        class="form-control" id="scheduledDate"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="scheduleDescription"
+                                        class="form-label">Description</label>
+                                    <textarea class="form-control"
+                                        id="scheduleDescription"
+                                        rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary"
+                                id="saveScheduleBtn">Save Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Detail Modal -->
+            <div class="modal fade" id="scheduleDetailModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Maintenance Details</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="detail-item">
+                                <div class="detail-label">Device</div>
+                                <div class="detail-value"
+                                    id="detailScheduleDevice"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Technician</div>
+                                <div class="detail-value"
+                                    id="detailScheduleTechnician"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Type</div>
+                                <div class="detail-value"
+                                    id="detailScheduleType"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Scheduled Date</div>
+                                <div class="detail-value"
+                                    id="detailScheduleDate"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Status</div>
+                                <div class="detail-value">
+                                    <span class="status-badge"
+                                        id="detailScheduleStatus"></span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Description</div>
+                                <div class="detail-value"
+                                    id="detailScheduleDescription"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Technician Modal -->
+            <div class="modal fade" id="addTechnicianModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Technician</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="technicianForm">
+                                <div class="mb-3">
+                                    <label for="technicianName"
+                                        class="form-label">Full Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        id="technicianName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="technicianSpecialization"
+                                        class="form-label">Specialization <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        id="technicianSpecialization" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="technicianPhone"
+                                        class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control"
+                                        id="technicianPhone">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="technicianAddress"
+                                        class="form-label">Address</label>
+                                    <textarea class="form-control"
+                                        id="technicianAddress"
+                                        rows="2"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="technicianHireDate"
+                                        class="form-label">Hire Date</label>
+                                    <input type="date" class="form-control"
+                                        id="technicianHireDate">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary"
+                                id="saveTechnicianBtn">Save Technician</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technician Detail Modal -->
+            <div class="modal fade" id="technicianDetailModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Technician Details</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="detail-item">
+                                <div class="detail-label">Full Name</div>
+                                <div class="detail-value"
+                                    id="detailTechName"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Specialization</div>
+                                <div class="detail-value"
+                                    id="detailTechSpecialization"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Phone Number</div>
+                                <div class="detail-value"
+                                    id="detailTechPhone"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Hire Date</div>
+                                <div class="detail-value"
+                                    id="detailTechHireDate"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Address</div>
+                                <div class="detail-value"
+                                    id="detailTechAddress"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add User Modal -->
+            <div class="modal fade" id="addUserModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add User</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="userForm">
+                                <div class="mb-3">
+                                    <label for="newUsername"
+                                        class="form-label">Username <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        id="newUsername" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newFullName"
+                                        class="form-label">Full Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        id="newFullName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newEmail"
+                                        class="form-label">Email <span
+                                            class="text-danger">*</span></label>
+                                    <input type="email" class="form-control"
+                                        id="newEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword"
+                                        class="form-label">Password <span
+                                            class="text-danger">*</span></label>
+                                    <input type="password" class="form-control"
+                                        id="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmPassword"
+                                        class="form-label">Confirm Password
+                                        <span
+                                            class="text-danger">*</span></label>
+                                    <input type="password" class="form-control"
+                                        id="confirmPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="userRole"
+                                        class="form-label">Role <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select" id="userRole"
+                                        required>
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary"
+                                id="saveUserBtn">Save User</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Detail Modal -->
+            <div class="modal fade" id="alertDetailModal" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Alert Details</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="detail-item">
+                                <div class="detail-label">Device</div>
+                                <div class="detail-value"
+                                    id="detailAlertDevice"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Message</div>
+                                <div class="detail-value"
+                                    id="detailAlertMessage"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Severity</div>
+                                <div class="detail-value">
+                                    <span class="status-badge"
+                                        id="detailAlertSeverity"></span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Date</div>
+                                <div class="detail-value"
+                                    id="detailAlertDate"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Status</div>
+                                <div class="detail-value"
+                                    id="detailAlertStatus"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Resolution Notes</div>
+                                <div class="detail-value"
+                                    id="detailAlertResolution"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success"
+                                id="resolveAlertBtn" style="display: none;">
+                                <i class="bi bi-check-circle me-1"></i> Resolve
+                                Alert
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Modal -->
+            <div class="modal fade" id="loginModal" tabindex="-1"
+                aria-hidden="true" data-bs-backdrop="static"
+                data-bs-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Welcome to Maintenance
+                                Pro</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-tools"
+                                    style="font-size: 3rem; color: var(--primary-color);"></i>
+                                <h3 class="mt-3">Please sign in</h3>
+                            </div>
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label for="loginUsername"
+                                        class="form-label">Username</label>
+                                    <input type="text" class="form-control"
+                                        id="loginUsername" required name="username">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loginPassword"
+                                        class="form-label">Password</label>
+                                    <input type="password" class="form-control"
+                                        id="loginPassword" required name="password">
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox"
+                                        class="form-check-input"
+                                        id="rememberMe">
+                                    <label class="form-check-label"
+                                        for="rememberMe">Remember me</label>
+                                </div>
+                                <div class="alert alert-danger mt-3" id="loginError"
+                                    style="display: none;"></div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary w-100" id="loginBtn">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i>
+                                        Login
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scripts -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="/js/main.js"></script>
+        </body>
+    </html>
