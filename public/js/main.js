@@ -79,6 +79,14 @@ async function loadDashboardData() {
         renderRecentAlerts();
         renderUpcomingMaintenance();
 
+        // Sau khi cập nhật cache, cập nhật UI cho tab hiện tại
+        const activeTab = document.querySelector('.tab-pane.active');
+        if (activeTab) {
+            if (activeTab.id === 'devices') loadDevices();
+            if (activeTab.id === 'maintenance') loadMaintenance();
+            if (activeTab.id === 'alerts') loadAlerts();
+            if (activeTab.id === 'technicians') loadTechnicians();
+        }
     } catch (error) {
         console.error('Error loading dashboard data:', error);
         showToast('error', 'Failed to load dashboard data');
@@ -435,7 +443,7 @@ if (devicesTable) {
                     .then(() => {
                         showToast('success', 'Xóa thiết bị thành công');
                         cachedDevices = [];
-                        loadDevices();
+                        loadDashboardData();
                     })
                     .catch(() => showToast('error', 'Xóa thiết bị thất bại'));
             }
@@ -456,7 +464,8 @@ document.getElementById('saveDeviceBtn').addEventListener('click', async functio
         axios.post('/devices', data)
             .then(() => {
                 showToast('success', 'Thêm thiết bị thành công');
-                loadDevices();
+                cachedDevices = [];
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addDeviceModal')).hide();
             })
             .catch(() => showToast('error', 'Thêm thiết bị thất bại'));
@@ -464,7 +473,8 @@ document.getElementById('saveDeviceBtn').addEventListener('click', async functio
         axios.put(`/devices/${editingDeviceId}`, data)
             .then(() => {
                 showToast('success', 'Cập nhật thiết bị thành công');
-                loadDevices();
+                cachedDevices = [];
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addDeviceModal')).hide();
             })
             .catch(() => showToast('error', 'Cập nhật thiết bị thất bại'));
@@ -504,7 +514,7 @@ if (techniciansTable) {
                     .then(() => {
                         showToast('success', 'Xóa kỹ thuật viên thành công');
                         cachedTechnicians = [];
-                        loadTechnicians();
+                        loadDashboardData();
                     })
                     .catch(() => showToast('error', 'Xóa kỹ thuật viên thất bại'));
             }
@@ -524,7 +534,8 @@ document.getElementById('saveTechnicianBtn').addEventListener('click', async fun
         axios.post('/technicians', data)
             .then(() => {
                 showToast('success', 'Thêm kỹ thuật viên thành công');
-                loadTechnicians();
+                cachedTechnicians = [];
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addTechnicianModal')).hide();
             })
             .catch(() => showToast('error', 'Thêm kỹ thuật viên thất bại'));
@@ -532,7 +543,8 @@ document.getElementById('saveTechnicianBtn').addEventListener('click', async fun
         axios.put(`/technicians/${editingTechnicianId}`, data)
             .then(() => {
                 showToast('success', 'Cập nhật kỹ thuật viên thành công');
-                loadTechnicians();
+                cachedTechnicians = [];
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addTechnicianModal')).hide();
             })
             .catch(() => showToast('error', 'Cập nhật kỹ thuật viên thất bại'));
@@ -574,7 +586,7 @@ if (maintenanceTable) {
                 axios.delete(`/maintenance/${scheduleId}`)
                     .then(() => {
                         showToast('success', 'Xóa lịch bảo trì thành công');
-                        loadMaintenance();
+                        loadDashboardData();
                     })
                     .catch(() => showToast('error', 'Xóa lịch bảo trì thất bại'));
             }
@@ -595,7 +607,7 @@ document.getElementById('saveScheduleBtn').addEventListener('click', async funct
         axios.post('/maintenance', data)
             .then(() => {
                 showToast('success', 'Thêm lịch bảo trì thành công');
-                loadMaintenance();
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addScheduleModal')).hide();
             })
             .catch(() => showToast('error', 'Thêm lịch bảo trì thất bại'));
@@ -603,7 +615,7 @@ document.getElementById('saveScheduleBtn').addEventListener('click', async funct
         axios.put(`/maintenance/${editingMaintenanceId}`, data)
             .then(() => {
                 showToast('success', 'Cập nhật lịch bảo trì thành công');
-                loadMaintenance();
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addScheduleModal')).hide();
             })
             .catch(() => showToast('error', 'Cập nhật lịch bảo trì thất bại'));
@@ -639,8 +651,7 @@ if (alertsTable) {
                 axios.delete(`/alerts/${alertId}`)
                     .then(() => {
                         showToast('success', 'Xóa cảnh báo thành công');
-                        cachedAlerts = [];
-                        loadAlerts();
+                        loadDashboardData();
                     })
                     .catch(() => showToast('error', 'Xóa cảnh báo thất bại'));
             }
@@ -659,7 +670,7 @@ if (saveAlertBtn) {
             axios.post('/alerts', data)
                 .then(() => {
                     showToast('success', 'Thêm cảnh báo thành công');
-                    loadAlerts();
+                    loadDashboardData();
                     bootstrap.Modal.getInstance(document.getElementById('addAlertModal')).hide();
                 })
                 .catch(() => showToast('error', 'Thêm cảnh báo thất bại'));
@@ -667,7 +678,7 @@ if (saveAlertBtn) {
             axios.put(`/alerts/${editingAlertId}`, data)
                 .then(() => {
                     showToast('success', 'Cập nhật cảnh báo thành công');
-                    loadAlerts();
+                    loadDashboardData();
                     bootstrap.Modal.getInstance(document.getElementById('addAlertModal')).hide();
                 })
                 .catch(() => showToast('error', 'Cập nhật cảnh báo thất bại'));
@@ -708,7 +719,7 @@ if (usersTable) {
                 axios.delete(`/users/${userId}`)
                     .then(() => {
                         showToast('success', 'Xóa user thành công');
-                        loadUsers();
+                        loadDashboardData();
                     })
                     .catch(() => showToast('error', 'Xóa user thất bại'));
             }
@@ -729,7 +740,7 @@ document.getElementById('saveUserBtn').addEventListener('click', async function 
         axios.post('/users', data)
             .then(() => {
                 showToast('success', 'Thêm user thành công');
-                loadUsers();
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
             })
             .catch(() => showToast('error', 'Thêm user thất bại'));
@@ -737,7 +748,7 @@ document.getElementById('saveUserBtn').addEventListener('click', async function 
         axios.put(`/users/${editingUserId}`, data)
             .then(() => {
                 showToast('success', 'Cập nhật user thành công');
-                loadUsers();
+                loadDashboardData();
                 bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
             })
             .catch(() => showToast('error', 'Cập nhật user thất bại'));
@@ -760,7 +771,7 @@ async function loadActivityLog() {
                 <td>${log.username || log.userId}</td>
                 <td>${log.action}</td>
                 <td>${log.details}</td>
-                <td>${log.createdAt ? new Date(log.createdAt).toLocaleString() : ''}</td>
+                <td>${log.created_at ? new Date(log.created_at).toLocaleString() : ''}</td>
             `;
             tbody.appendChild(row);
         });

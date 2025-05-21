@@ -141,6 +141,10 @@ exports.deleteDevice = async (req, res) => {
             return res.status(404).json({ message: 'Device not found' });
         }
 
+        // Xóa các bản ghi liên quan trong Alerts và MaintenanceSchedules
+        await pool.query('DELETE FROM Alerts WHERE DeviceID = ?', [deviceId]);
+        await pool.query('DELETE FROM MaintenanceSchedules WHERE DeviceID = ?', [deviceId]);
+
         // Xóa device
         const [result] = await pool.query('DELETE FROM Devices WHERE id = ?', [deviceId]);
 

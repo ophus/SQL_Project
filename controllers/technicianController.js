@@ -60,11 +60,8 @@ const deleteTechnician = async (req, res) => {
     try {
         // Set NULL cho các schedule liên quan
         await pool.query('UPDATE MaintenanceSchedules SET TechnicianID = NULL WHERE TechnicianID = ?', [id]);
-        // Kiểm tra thiết bị còn gán technician không
-        const [devices] = await pool.query('SELECT * FROM Devices WHERE assignedTechnician = ?', [id]);
-        if (devices.length > 0) {
-            return res.status(400).json({ message: 'Không thể xóa kỹ thuật viên vì vẫn còn thiết bị được gán cho họ.' });
-        }
+        // Set NULL cho các thiết bị đang gán technician này
+        await pool.query('UPDATE Devices SET assignedTechnician = NULL WHERE assignedTechnician = ?', [id]);
         // Xóa technician
         const [result] = await pool.query('DELETE FROM Technicians WHERE id = ?', [id]);
         if (result.affectedRows === 0) return res.status(404).json({ message: 'Technician not found' });
